@@ -6,6 +6,7 @@ import { elementIsBlock, hasBlockAttribute, nodeIsElement, nodeIsText } from "@t
 import { on } from "@tslib/events";
 
 import { moveChildOutOfElement } from "#lib/domlib/move-nodes.js";
+import { deleteNodeUndoably } from "#lib/domlib/delete-node.js";
 import { placeCaretAfter, placeCaretBefore } from "#lib/domlib/place-caret.js";
 
 import type { FrameHandle } from "./frame-handle";
@@ -19,7 +20,7 @@ function restoreFrameHandles(mutations: MutationRecord[]): void {
         const framed = frameElement.querySelector(frameElement.frames!) as HTMLElement;
 
         if (!framed) {
-            frameElement.remove();
+            deleteNodeUndoably(frameElement);
             continue;
         }
 
@@ -56,7 +57,7 @@ function restoreFrameHandles(mutations: MutationRecord[]): void {
                 // Similar to a "movein", this could be considered a
                 // "deletein" event and could get some special treatment, e.g.
                 // first highlight the entire frame-element.
-                frameElement.remove();
+                deleteNodeUndoably(frameElement);
                 continue;
             }
 
